@@ -171,13 +171,21 @@ export default async function handler(
     res.status(200).json({ response: aiResponse });
   } catch (error) {
     console.error('Perplexity API error:', error);
+    console.error('API Key configured:', !!apiKey);
+    console.error('API Key length:', apiKey?.length || 0);
     
     if (axios.isAxiosError(error)) {
+      console.error('Response status:', error.response?.status);
+      console.error('Response data:', error.response?.data);
+      
       if (error.response?.status === 401) {
-        return res.status(500).json({ error: 'API authentication failed' });
+        return res.status(500).json({ error: 'API authentication failed - check your Perplexity API key' });
       }
       if (error.response?.status === 429) {
         return res.status(429).json({ error: 'API rate limit exceeded. Please try again later.' });
+      }
+      if (error.response?.status === 403) {
+        return res.status(500).json({ error: 'API access forbidden - check your Perplexity API key permissions' });
       }
     }
 
