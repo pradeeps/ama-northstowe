@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, MessageCircle, Clock, Sparkles } from 'lucide-react';
 import axios from 'axios';
+import Head from 'next/head';
 
 interface Message {
   id: string;
@@ -134,7 +135,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <>
+      <Head>
+        <title>AMA Northstowe - Your Local Community Assistant</title>
+        <meta name="description" content="Ask questions about Northstowe - local services, events, transport, and community information." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="AMA Northstowe" />
+        <meta property="og:description" content="Ask questions about Northstowe - local services, events, transport, and community information." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="AMA Northstowe" />
+        <meta name="twitter:description" content="Ask questions about Northstowe - local services, events, transport, and community information." />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -263,6 +277,7 @@ export default function Home() {
           <p>Powered by AI • For Northstowe residents</p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
