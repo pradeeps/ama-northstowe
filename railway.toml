@@ -5,3 +5,6 @@ builder = "nixpacks"
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "never"
+
+[env]
+NODE_ENV = "production"
