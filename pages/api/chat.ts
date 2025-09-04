@@ -118,7 +118,14 @@ export default async function handler(
   }
 
   try {
+    console.log('=== DEBUG INFO ===');
+    console.log('API Key configured:', !!apiKey);
+    console.log('API Key length:', apiKey?.length || 0);
+    console.log('API Key starts with pplx-:', apiKey?.startsWith('pplx-') || false);
+    console.log('Original message:', message);
+    
     const enhancedMessage = enhanceQueryForNorthstowe(message);
+    console.log('Enhanced message:', enhancedMessage);
     
     const messages: ChatMessage[] = [
       {
@@ -142,10 +149,12 @@ export default async function handler(
       }
     ];
 
+    console.log('Sending request to Perplexity with model: sonar-small-online');
+    
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'sonar-small-online',
+        model: 'sonar-small-chat',
         messages,
         max_tokens: 800,
         temperature: 0.2,
@@ -161,6 +170,9 @@ export default async function handler(
         }
       }
     );
+    
+    console.log('Perplexity response status:', response.status);
+    console.log('Perplexity response data:', JSON.stringify(response.data, null, 2));
 
     const aiResponse = response.data.choices[0]?.message?.content;
     
