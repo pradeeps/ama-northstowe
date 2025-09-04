@@ -121,7 +121,8 @@ function enhanceQueryForNorthstowe(query: string): string {
   
   // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
-    return `Northstowe Town Council next meeting date September October November December 2024 2025 "meeting on" "council meeting" agenda minutes specific date time`;
+    const currentDate = new Date().toLocaleDateString('en-GB');
+    return `Northstowe Town Council next upcoming meeting after ${currentDate} September October November December 2024 2025 future meetings agenda "meeting on" upcoming scheduled`;
   }
   
   // For bin collection queries
@@ -187,10 +188,10 @@ export default async function handler(
         role: 'system',
         content: `You are a detailed local information assistant for Northstowe residents in South Cambridgeshire, UK. Today's date is ${new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
 
-        CRITICAL REQUIREMENT: Find and provide SPECIFIC dates, times, and details. Do NOT refer people to documents or websites unless absolutely no specific information exists.
+        CRITICAL REQUIREMENT: Find and provide SPECIFIC FUTURE dates, times, and details. Today is ${new Date().toLocaleDateString('en-GB')}. ONLY provide dates that are AFTER today. Do NOT refer people to documents or websites unless absolutely no specific information exists.
 
         SPECIAL SEARCH INSTRUCTIONS:
-        For meeting dates: Search for actual meeting announcements, agenda postings, minutes from recent meetings, community forum posts, social media announcements, or news articles that mention specific upcoming meeting dates.
+        For meeting dates: Search for UPCOMING meeting announcements, future agenda postings, recent minutes that mention the NEXT meeting date, or announcements about meetings scheduled AFTER today's date.
         
         If you find references to PDFs or schedules but can't access the content, search for:
         - Recent meeting minutes that mention the next meeting date
@@ -236,8 +237,8 @@ export default async function handler(
         temperature: 0,
         top_p: 0.8,
         return_citations: true,
-        search_recency_filter: 'month',
-        search_domain_filter: ['northstowe.org', 'scambs.gov.uk', 'cambridge.gov.uk', 'cambridgeshire.gov.uk', 'facebook.com', 'nextdoor.com', 'whatdotheyknow.com']
+        search_recency_filter: 'week',
+        search_domain_filter: ['northstowetowncouncil.gov.uk', 'northstowe.org', 'scambs.gov.uk']
       },
       {
         headers: {
