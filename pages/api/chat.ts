@@ -117,9 +117,30 @@ function isNorthstoweRelated(query: string): boolean {
 }
 
 function enhanceQueryForNorthstowe(query: string): string {
-  // Add Northstowe context to help Perplexity understand the location
-  const enhancedQuery = `${query} in Northstowe, Cambridgeshire, UK. Northstowe is a new town development in South Cambridgeshire.`;
-  return enhancedQuery;
+  const lowerQuery = query.toLowerCase();
+  
+  // For meeting-related queries, be more specific about finding schedules
+  if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
+    return `${query} Northstowe Town Council meeting schedule calendar agenda dates September October November December 2024 2025 exact upcoming specific`;
+  }
+  
+  // For bin collection queries
+  if (lowerQuery.includes('bin') || lowerQuery.includes('collection') || lowerQuery.includes('waste') || lowerQuery.includes('rubbish')) {
+    return `${query} Northstowe bin collection schedule South Cambridgeshire District Council calendar dates Friday specific next upcoming`;
+  }
+  
+  // For transport queries
+  if (lowerQuery.includes('bus') || lowerQuery.includes('transport') || lowerQuery.includes('travel')) {
+    return `${query} Northstowe bus transport timetable schedule route numbers specific times guided busway Cambridge`;
+  }
+  
+  // For facility/opening queries
+  if (lowerQuery.includes('open') || lowerQuery.includes('centre') || lowerQuery.includes('center') || lowerQuery.includes('facility')) {
+    return `${query} Northstowe opening times dates schedule construction timeline specific completion`;
+  }
+  
+  // Default enhancement
+  return `${query} in Northstowe, Cambridgeshire, UK. Find specific current information, dates, times, schedules, contact details.`;
 }
 
 export default async function handler(
@@ -206,7 +227,7 @@ export default async function handler(
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'sonar-reasoning',
+        model: 'sonar-deep-research',
         messages,
         max_tokens: 1200,
         temperature: 0,
