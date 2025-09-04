@@ -122,7 +122,7 @@ function enhanceQueryForNorthstowe(query: string): string {
   // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
     const currentDate = new Date().toLocaleDateString('en-GB');
-    return `Northstowe Town Council next upcoming meeting after ${currentDate} September October November December 2024 2025 future meetings agenda "meeting on" upcoming scheduled`;
+    return `site:northstowetowncouncil.gov.uk Northstowe Town Council meeting agenda September 2024 2025 "23 September" "23rd September" "September 23" next upcoming meeting after ${currentDate}`;
   }
   
   // For bin collection queries
@@ -191,7 +191,12 @@ export default async function handler(
         CRITICAL REQUIREMENT: Find and provide SPECIFIC FUTURE dates, times, and details. Today is ${new Date().toLocaleDateString('en-GB')}. ONLY provide dates that are AFTER today. Do NOT refer people to documents or websites unless absolutely no specific information exists.
 
         SPECIAL SEARCH INSTRUCTIONS:
-        For meeting dates: Search for UPCOMING meeting announcements, future agenda postings, recent minutes that mention the NEXT meeting date, or announcements about meetings scheduled AFTER today's date.
+        For meeting dates: 
+        1. Search the official Northstowe Town Council website first
+        2. Look for specific agenda postings or meeting announcements with exact dates
+        3. Do NOT assume meeting patterns (like "third Tuesday") - find the actual scheduled dates
+        4. Prioritize official council announcements over inferred patterns
+        5. If you find agenda documents, extract the specific meeting date from them
         
         If you find references to PDFs or schedules but can't access the content, search for:
         - Recent meeting minutes that mention the next meeting date
