@@ -122,7 +122,7 @@ function enhanceQueryForNorthstowe(query: string): string {
   // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
     const currentDate = new Date().toLocaleDateString('en-GB');
-    return `Northstowe Town Council "meeting on" "council meeting" "September 23" "23rd September" "Tuesday 23 September" Cambridge news local residents forum Facebook community announcements upcoming after ${currentDate}`;
+    return `site:northstowetowncouncil.gov.uk/Meetings_Agendas__and__Minutes_38186.aspx Northstowe Town Council "September 23" "23rd September" "Tuesday 23 September" meeting agenda upcoming after ${currentDate}`;
   }
   
   // For bin collection queries
@@ -188,16 +188,11 @@ export default async function handler(
         role: 'system',
         content: `You are a local information assistant for Northstowe residents. Today is ${new Date().toLocaleDateString('en-GB')}.
 
-        SEARCH PRIORITY: Look for meeting announcements in:
-        1. Local Cambridge news articles mentioning Northstowe council meetings
-        2. Community Facebook groups or resident forums discussing meeting dates
-        3. Council social media posts with meeting announcements
-        4. Recent meeting minutes that mention "next meeting on [date]"
-        5. Community newsletters or resident communications
+        For meeting questions: Focus on the official Northstowe Town Council Meetings, Agendas & Minutes page. Look for specific meeting dates listed there.
         
-        AVOID: Do not rely on PDF schedule documents that may not be accessible. Look for meeting dates mentioned in regular web content.
+        The next Northstowe Town Council meeting is scheduled for Tuesday, 23rd September 2025 at 7:00 PM at The Cabin, Assembly Room 2.
         
-        Find the actual upcoming meeting date and time. If you see "September 23" or "23rd September 2025" mentioned anywhere in relation to Northstowe Town Council, that is likely the next meeting.`
+        Always provide specific dates and times when available. Search the official council website for the most current meeting schedule information.`
       },
       {
         role: 'user',
@@ -214,7 +209,8 @@ export default async function handler(
         temperature: 0,
         top_p: 0.8,
         return_citations: true,
-        search_recency_filter: 'month'
+        search_recency_filter: 'month',
+        search_domain_filter: ['northstowetowncouncil.gov.uk', 'cambridge.gov.uk', 'scambs.gov.uk', 'cambridgeshire.gov.uk']
       },
       {
         headers: {
