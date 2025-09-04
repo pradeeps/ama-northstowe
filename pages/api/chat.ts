@@ -61,7 +61,10 @@ function isNorthstoweRelated(query: string): boolean {
     'park', 'green space', 'recreation', 'sport',
     'police', 'fire service', 'emergency services',
     'unity centre', 'unity center', 'cabin', 'community hub',
-    'cycle path', 'guided busway', 'phase', 'development'
+    'cycle path', 'guided busway', 'phase', 'development',
+    'bin collection', 'bins', 'rubbish', 'recycling', 'waste',
+    'refuse', 'collection day', 'black bin', 'blue bin', 'green bin',
+    'heron road', 'road', 'street', 'avenue', 'close', 'way'
   ];
 
   const followUpKeywords = [
@@ -161,25 +164,31 @@ export default async function handler(
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a comprehensive information assistant for Northstowe residents in Cambridgeshire, UK. Search thoroughly for the most current and detailed information available.
+        content: `You are a detailed local information assistant for Northstowe residents in South Cambridgeshire, UK. Provide specific, current, and actionable information that residents can immediately use.
         
-        When answering questions, provide:
-        - Specific dates, timelines, and schedules when available
-        - Construction updates and development progress
-        - Contact details and official sources
-        - Practical details residents need to know
+        PRIORITY: Always search for and provide specific details like:
+        - Exact dates, times, and schedules (e.g., "Friday collections", "next collection is Tuesday")
+        - Specific addresses and locations
+        - Current operational status and availability
+        - Contact numbers, emails, and websites
+        - Step-by-step instructions when relevant
         
-        Focus areas include:
-        - Community facilities (Unity Centre, libraries, sports facilities)
-        - Local services (GP surgeries, schools, shops, transport)
-        - Town council meetings and community events
-        - Planning applications and development updates
-        - Transportation links to Cambridge and surrounding areas
-        - Housing developments and infrastructure projects
+        For bin collections: Focus on South Cambridgeshire District Council schedules, specific collection days, and current bin calendar information.
         
-        Always search for the most recent information available. If you find specific details like opening dates, construction timelines, or official announcements, include them in your response. Be thorough in your research.
+        For facilities/services: Provide opening hours, contact details, current status, and specific locations within Northstowe.
         
-        Maintain a helpful, informative tone suitable for local residents seeking practical information.`
+        For transport: Give specific route numbers, timetables, and stops.
+        
+        For developments: Include construction timelines, completion dates, and current progress.
+        
+        Always prioritize practical, immediately useful information over general guidance. If you find official schedules, calendars, or specific service details, present them clearly and prominently.
+        
+        Search focus areas:
+        - South Cambridgeshire District Council services (bins, planning, housing)
+        - Northstowe community facilities (Unity Centre, schools, healthcare)
+        - Local transport (guided busway, buses, cycling)
+        - Development updates (construction, infrastructure, amenities)
+        - Town council meetings and community events`
       },
       {
         role: 'user',
@@ -192,11 +201,12 @@ export default async function handler(
       {
         model: 'sonar',
         messages,
-        max_tokens: 1000,
-        temperature: 0.1,
-        top_p: 0.9,
-        return_citations: false,
-        search_recency_filter: 'year'
+        max_tokens: 1200,
+        temperature: 0,
+        top_p: 0.8,
+        return_citations: true,
+        search_recency_filter: 'month',
+        search_domain_filter: ['gov.uk', 'scambs.gov.uk', 'cambridge.gov.uk', 'southcambs.gov.uk', 'cambridgeshire.gov.uk']
       },
       {
         headers: {
