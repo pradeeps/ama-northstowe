@@ -236,7 +236,7 @@ export default async function handler(
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'llama-3.1-sonar-large-128k-online',
+        model: 'sonar-reasoning',
         messages,
         max_tokens: 2000,
         temperature: 0,
