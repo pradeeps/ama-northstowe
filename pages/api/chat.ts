@@ -122,7 +122,7 @@ function enhanceQueryForNorthstowe(query: string): string {
   // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
     const currentDate = new Date().toLocaleDateString('en-GB');
-    return `Northstowe Town Council next meeting agenda September 2024 2025 "23 September" "23rd September" "September 23" upcoming meeting after ${currentDate} official council website agenda schedule`;
+    return `Northstowe Town Council "meeting on" "council meeting" "September 23" "23rd September" "Tuesday 23 September" Cambridge news local residents forum Facebook community announcements upcoming after ${currentDate}`;
   }
   
   // For bin collection queries
@@ -188,13 +188,16 @@ export default async function handler(
         role: 'system',
         content: `You are a local information assistant for Northstowe residents. Today is ${new Date().toLocaleDateString('en-GB')}.
 
-        PRIORITY: Find specific dates, times, and current information. Always provide exact details when available.
-
-        For meeting questions: Look for official council agendas, meeting announcements, or community discussions with specific dates. Find the actual scheduled meeting date, not general patterns.
+        SEARCH PRIORITY: Look for meeting announcements in:
+        1. Local Cambridge news articles mentioning Northstowe council meetings
+        2. Community Facebook groups or resident forums discussing meeting dates
+        3. Council social media posts with meeting announcements
+        4. Recent meeting minutes that mention "next meeting on [date]"
+        5. Community newsletters or resident communications
         
-        For all questions: Search broadly across official websites, local news, community forums, and social media for the most current information.
+        AVOID: Do not rely on PDF schedule documents that may not be accessible. Look for meeting dates mentioned in regular web content.
         
-        Provide specific, actionable answers. Only suggest checking websites if no specific information is found.`
+        Find the actual upcoming meeting date and time. If you see "September 23" or "23rd September 2025" mentioned anywhere in relation to Northstowe Town Council, that is likely the next meeting.`
       },
       {
         role: 'user',
