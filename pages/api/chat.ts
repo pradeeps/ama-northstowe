@@ -121,7 +121,7 @@ function enhanceQueryForNorthstowe(query: string): string {
   
   // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
-    return `${query} Northstowe Town Council meeting schedule upcoming dates`;
+    return `Northstowe Town Council next meeting date September October November December 2024 2025 "meeting on" "council meeting" agenda minutes specific date time`;
   }
   
   // For bin collection queries
@@ -187,36 +187,39 @@ export default async function handler(
         role: 'system',
         content: `You are a detailed local information assistant for Northstowe residents in South Cambridgeshire, UK. Today's date is ${new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
 
-        CRITICAL REQUIREMENT: Always provide the MOST SPECIFIC information available. Never give generic advice when specific details exist.
+        CRITICAL REQUIREMENT: Find and provide SPECIFIC dates, times, and details. Do NOT refer people to documents or websites unless absolutely no specific information exists.
+
+        SPECIAL SEARCH INSTRUCTIONS:
+        For meeting dates: Search for actual meeting announcements, agenda postings, minutes from recent meetings, community forum posts, social media announcements, or news articles that mention specific upcoming meeting dates.
+        
+        If you find references to PDFs or schedules but can't access the content, search for:
+        - Recent meeting minutes that mention the next meeting date
+        - Community announcements about upcoming meetings
+        - Social media posts from the council
+        - Local news articles about council meetings
+        - Resident forum discussions mentioning meeting dates
 
         EXAMPLES OF WHAT TO DO:
         ✓ "The next meeting is Tuesday, 23rd September 2025, 7-9pm" 
-        ✗ "Meetings are available on the website"
+        ✗ "Check the meeting schedule PDF"
         
         ✓ "Next bin collection is Friday" 
-        ✗ "Check the council website for dates"
+        ✗ "Visit the council website for dates"
         
         ✓ "Unity Centre opens spring 2026, construction began March 2025" 
         ✗ "Opening date will be announced later"
 
         SEARCH STRATEGY:
-        1. Look for EXACT dates, times, and specific details FIRST
-        2. Find current schedules, calendars, and official announcements
-        3. Prioritize recent information (2024-2025) over older content
-        4. Include specific locations, contact details, and practical instructions
-        5. If you find official documents or schedules, extract the specific details
+        1. Search multiple sources: official sites, social media, community forums, local news
+        2. Look for meeting announcements, not just schedule references
+        3. Check recent meeting minutes for "next meeting" mentions
+        4. Search for community discussions about upcoming events
+        5. If no specific date found, search for patterns (e.g., "meetings held monthly on second Tuesday")
 
         RESPONSE FORMAT:
-        - Lead with the specific answer (date, time, location)
-        - Then provide supporting context and details
-        - Include practical next steps only if the specific information isn't available
-
-        Focus on these Northstowe-specific sources:
-        - Northstowe Town Council meeting schedules and agendas
-        - South Cambridgeshire District Council service schedules
-        - Official development updates and construction timelines
-        - Current transport timetables and route information
-        - Community facility opening hours and contact details`
+        - Lead with the specific answer if found
+        - If no specific date available, provide the best available information about timing patterns
+        - Only mention checking documents as a last resort`
       },
       {
         role: 'user',
@@ -233,7 +236,8 @@ export default async function handler(
         temperature: 0,
         top_p: 0.8,
         return_citations: true,
-        search_recency_filter: 'month'
+        search_recency_filter: 'month',
+        search_domain_filter: ['northstowe.org', 'scambs.gov.uk', 'cambridge.gov.uk', 'cambridgeshire.gov.uk', 'facebook.com', 'nextdoor.com', 'whatdotheyknow.com']
       },
       {
         headers: {
