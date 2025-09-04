@@ -21,6 +21,7 @@ export default function Home() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitInfo>({ isLimited: false });
+  const [countdown, setCountdown] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +37,28 @@ export default function Home() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Countdown timer for rate limit recovery
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (rateLimitInfo.isLimited && rateLimitInfo.resetTime) {
+      interval = setInterval(() => {
+        const now = Date.now();
+        const timeLeft = Math.max(0, Math.ceil((rateLimitInfo.resetTime! - now) / 1000));
+        setCountdown(timeLeft);
+        
+        if (timeLeft === 0) {
+          setRateLimitInfo({ isLimited: false });
+          setCountdown(0);
+        }
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [rateLimitInfo]);
 
   useEffect(() => {
     // Add welcome message on component mount
@@ -240,12 +263,15 @@ export default function Home() {
 
           {/* Input Area */}
           <div className="p-6 border-t border-gray-100">
-            {rateLimitInfo.isLimited && rateLimitInfo.resetTime && (
+            {rateLimitInfo.isLimited && (
               <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <div className="flex items-center gap-2 text-yellow-800">
                   <Clock className="h-4 w-4" />
                   <span className="text-sm">
-                    Rate limit reached. Please wait before sending another message.
+                    {countdown > 0 
+                      ? `Rate limit reached. You can ask another question in ${countdown} seconds.`
+                      : 'Rate limit reached. Please wait a moment.'
+                    }
                   </span>
                 </div>
               </div>

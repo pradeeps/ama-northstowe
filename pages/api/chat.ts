@@ -59,7 +59,19 @@ function isNorthstoweRelated(query: string): boolean {
     'library', 'community centre', 'church', 'facilities',
     'housing', 'development', 'planning', 'construction',
     'park', 'green space', 'recreation', 'sport',
-    'police', 'fire service', 'emergency services'
+    'police', 'fire service', 'emergency services',
+    'unity centre', 'unity center', 'cabin', 'community hub',
+    'cycle path', 'guided busway', 'phase', 'development'
+  ];
+
+  const followUpKeywords = [
+    'when', 'where', 'how', 'what', 'who', 'why', 'which',
+    'opening', 'available', 'cost', 'price', 'time', 'date',
+    'contact', 'phone', 'email', 'address', 'location',
+    'more information', 'details', 'update', 'status',
+    'it', 'this', 'that', 'they', 'there', 'here',
+    'also', 'additionally', 'furthermore', 'moreover',
+    'nearest', 'closest', 'best', 'recommended'
   ];
 
   const lowerQuery = query.toLowerCase();
@@ -69,10 +81,36 @@ function isNorthstoweRelated(query: string): boolean {
     return true;
   }
 
-  // Check for other relevant keywords
-  return northstoweKeywords.some(keyword => 
+  // Check for specific Northstowe keywords
+  if (northstoweKeywords.some(keyword => 
     lowerQuery.includes(keyword.toLowerCase())
-  );
+  )) {
+    return true;
+  }
+
+  // For very short questions or follow-up style questions, be more lenient
+  if (query.trim().length <= 50 && followUpKeywords.some(keyword => 
+    lowerQuery.includes(keyword.toLowerCase())
+  )) {
+    return true;
+  }
+
+  // If it's a question about opening times, locations, or services without specific mention
+  // but in the context of a community assistant, assume it's local
+  const localServicePatterns = [
+    /when.*(open|close|available)/i,
+    /where.*(is|are|can)/i,
+    /how.*(get|reach|contact)/i,
+    /what.*(time|day|hour)/i,
+    /is.*(open|available|ready)/i,
+    /are.*(there|any|open)/i
+  ];
+  
+  if (localServicePatterns.some(pattern => pattern.test(query))) {
+    return true;
+  }
+
+  return false;
 }
 
 function enhanceQueryForNorthstowe(query: string): string {
