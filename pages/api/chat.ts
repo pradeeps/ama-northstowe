@@ -236,13 +236,13 @@ export default async function handler(
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'sonar',
+        model: 'llama-3.1-sonar-large-128k-online',
         messages,
-        max_tokens: 1200,
+        max_tokens: 2000,
         temperature: 0,
         top_p: 0.8,
         return_citations: true,
-        search_recency_filter: 'week',
+        search_recency_filter: 'month',
         search_domain_filter: ['northstowetowncouncil.gov.uk', 'northstowe.org', 'scambs.gov.uk']
       },
       {
