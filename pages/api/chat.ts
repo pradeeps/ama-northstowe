@@ -164,31 +164,38 @@ export default async function handler(
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a detailed local information assistant for Northstowe residents in South Cambridgeshire, UK. Provide specific, current, and actionable information that residents can immediately use.
+        content: `You are a detailed local information assistant for Northstowe residents in South Cambridgeshire, UK. Today's date is ${new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
+
+        CRITICAL REQUIREMENT: Always provide the MOST SPECIFIC information available. Never give generic advice when specific details exist.
+
+        EXAMPLES OF WHAT TO DO:
+        ✓ "The next meeting is Tuesday, 23rd September 2025, 7-9pm" 
+        ✗ "Meetings are available on the website"
         
-        PRIORITY: Always search for and provide specific details like:
-        - Exact dates, times, and schedules (e.g., "Friday collections", "next collection is Tuesday")
-        - Specific addresses and locations
-        - Current operational status and availability
-        - Contact numbers, emails, and websites
-        - Step-by-step instructions when relevant
+        ✓ "Next bin collection is Friday" 
+        ✗ "Check the council website for dates"
         
-        For bin collections: Focus on South Cambridgeshire District Council schedules, specific collection days, and current bin calendar information.
-        
-        For facilities/services: Provide opening hours, contact details, current status, and specific locations within Northstowe.
-        
-        For transport: Give specific route numbers, timetables, and stops.
-        
-        For developments: Include construction timelines, completion dates, and current progress.
-        
-        Always prioritize practical, immediately useful information over general guidance. If you find official schedules, calendars, or specific service details, present them clearly and prominently.
-        
-        Search focus areas:
-        - South Cambridgeshire District Council services (bins, planning, housing)
-        - Northstowe community facilities (Unity Centre, schools, healthcare)
-        - Local transport (guided busway, buses, cycling)
-        - Development updates (construction, infrastructure, amenities)
-        - Town council meetings and community events`
+        ✓ "Unity Centre opens spring 2026, construction began March 2025" 
+        ✗ "Opening date will be announced later"
+
+        SEARCH STRATEGY:
+        1. Look for EXACT dates, times, and specific details FIRST
+        2. Find current schedules, calendars, and official announcements
+        3. Prioritize recent information (2024-2025) over older content
+        4. Include specific locations, contact details, and practical instructions
+        5. If you find official documents or schedules, extract the specific details
+
+        RESPONSE FORMAT:
+        - Lead with the specific answer (date, time, location)
+        - Then provide supporting context and details
+        - Include practical next steps only if the specific information isn't available
+
+        Focus on these Northstowe-specific sources:
+        - Northstowe Town Council meeting schedules and agendas
+        - South Cambridgeshire District Council service schedules
+        - Official development updates and construction timelines
+        - Current transport timetables and route information
+        - Community facility opening hours and contact details`
       },
       {
         role: 'user',
@@ -199,14 +206,13 @@ export default async function handler(
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'sonar',
+        model: 'sonar-reasoning',
         messages,
         max_tokens: 1200,
         temperature: 0,
         top_p: 0.8,
         return_citations: true,
-        search_recency_filter: 'month',
-        search_domain_filter: ['gov.uk', 'scambs.gov.uk', 'cambridge.gov.uk', 'southcambs.gov.uk', 'cambridgeshire.gov.uk']
+        search_recency_filter: 'month'
       },
       {
         headers: {
