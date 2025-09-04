@@ -119,24 +119,24 @@ function isNorthstoweRelated(query: string): boolean {
 function enhanceQueryForNorthstowe(query: string): string {
   const lowerQuery = query.toLowerCase();
   
-  // For meeting-related queries, be more specific about finding schedules
+  // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
-    return `${query} Northstowe Town Council meeting schedule calendar agenda dates September October November December 2024 2025 exact upcoming specific`;
+    return `${query} Northstowe Town Council meeting schedule upcoming dates`;
   }
   
   // For bin collection queries
   if (lowerQuery.includes('bin') || lowerQuery.includes('collection') || lowerQuery.includes('waste') || lowerQuery.includes('rubbish')) {
-    return `${query} Northstowe bin collection schedule South Cambridgeshire District Council calendar dates Friday specific next upcoming`;
+    return `${query} Northstowe bin collection schedule next Friday`;
   }
   
   // For transport queries
   if (lowerQuery.includes('bus') || lowerQuery.includes('transport') || lowerQuery.includes('travel')) {
-    return `${query} Northstowe bus transport timetable schedule route numbers specific times guided busway Cambridge`;
+    return `${query} Northstowe bus transport timetable route`;
   }
   
   // For facility/opening queries
   if (lowerQuery.includes('open') || lowerQuery.includes('centre') || lowerQuery.includes('center') || lowerQuery.includes('facility')) {
-    return `${query} Northstowe opening times dates schedule construction timeline specific completion`;
+    return `${query} Northstowe opening times construction timeline`;
   }
   
   // Default enhancement
@@ -227,7 +227,7 @@ export default async function handler(
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'sonar-deep-research',
+        model: 'sonar',
         messages,
         max_tokens: 1200,
         temperature: 0,
@@ -239,7 +239,8 @@ export default async function handler(
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
-        }
+        },
+        timeout: 30000 // 30 second timeout
       }
     );
 
