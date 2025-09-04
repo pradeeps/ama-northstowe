@@ -145,7 +145,7 @@ export default async function handler(
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
-        model: 'sonar',
+        model: 'sonar-small-online',
         messages,
         max_tokens: 800,
         temperature: 0.2,
