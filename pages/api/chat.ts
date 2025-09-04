@@ -122,7 +122,7 @@ function enhanceQueryForNorthstowe(query: string): string {
   // For meeting-related queries
   if (lowerQuery.includes('meeting') || lowerQuery.includes('council')) {
     const currentDate = new Date().toLocaleDateString('en-GB');
-    return `site:northstowetowncouncil.gov.uk Northstowe Town Council meeting agenda September 2024 2025 "23 September" "23rd September" "September 23" next upcoming meeting after ${currentDate}`;
+    return `Northstowe Town Council next meeting agenda September 2024 2025 "23 September" "23rd September" "September 23" upcoming meeting after ${currentDate} official council website agenda schedule`;
   }
   
   // For bin collection queries
@@ -186,46 +186,15 @@ export default async function handler(
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a detailed local information assistant for Northstowe residents in South Cambridgeshire, UK. Today's date is ${new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
+        content: `You are a local information assistant for Northstowe residents. Today is ${new Date().toLocaleDateString('en-GB')}.
 
-        CRITICAL REQUIREMENT: Find and provide SPECIFIC FUTURE dates, times, and details. Today is ${new Date().toLocaleDateString('en-GB')}. ONLY provide dates that are AFTER today. Do NOT refer people to documents or websites unless absolutely no specific information exists.
+        PRIORITY: Find specific dates, times, and current information. Always provide exact details when available.
 
-        SPECIAL SEARCH INSTRUCTIONS:
-        For meeting dates: 
-        1. Search the official Northstowe Town Council website first
-        2. Look for specific agenda postings or meeting announcements with exact dates
-        3. Do NOT assume meeting patterns (like "third Tuesday") - find the actual scheduled dates
-        4. Prioritize official council announcements over inferred patterns
-        5. If you find agenda documents, extract the specific meeting date from them
+        For meeting questions: Look for official council agendas, meeting announcements, or community discussions with specific dates. Find the actual scheduled meeting date, not general patterns.
         
-        If you find references to PDFs or schedules but can't access the content, search for:
-        - Recent meeting minutes that mention the next meeting date
-        - Community announcements about upcoming meetings
-        - Social media posts from the council
-        - Local news articles about council meetings
-        - Resident forum discussions mentioning meeting dates
-
-        EXAMPLES OF WHAT TO DO:
-        ✓ "The next meeting is Tuesday, 23rd September 2025, 7-9pm" 
-        ✗ "Check the meeting schedule PDF"
+        For all questions: Search broadly across official websites, local news, community forums, and social media for the most current information.
         
-        ✓ "Next bin collection is Friday" 
-        ✗ "Visit the council website for dates"
-        
-        ✓ "Unity Centre opens spring 2026, construction began March 2025" 
-        ✗ "Opening date will be announced later"
-
-        SEARCH STRATEGY:
-        1. Search multiple sources: official sites, social media, community forums, local news
-        2. Look for meeting announcements, not just schedule references
-        3. Check recent meeting minutes for "next meeting" mentions
-        4. Search for community discussions about upcoming events
-        5. If no specific date found, search for patterns (e.g., "meetings held monthly on second Tuesday")
-
-        RESPONSE FORMAT:
-        - Lead with the specific answer if found
-        - If no specific date available, provide the best available information about timing patterns
-        - Only mention checking documents as a last resort`
+        Provide specific, actionable answers. Only suggest checking websites if no specific information is found.`
       },
       {
         role: 'user',
