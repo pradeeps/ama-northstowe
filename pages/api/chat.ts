@@ -118,30 +118,30 @@ export default async function handler(
   }
 
   try {
-    console.log('=== DEBUG INFO ===');
-    console.log('API Key configured:', !!apiKey);
-    console.log('API Key length:', apiKey?.length || 0);
-    console.log('API Key starts with pplx-:', apiKey?.startsWith('pplx-') || false);
-    console.log('Original message:', message);
-    
     const enhancedMessage = enhanceQueryForNorthstowe(message);
-    console.log('Enhanced message:', enhancedMessage);
     
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a helpful assistant specifically for residents of Northstowe, a new town in Cambridgeshire, UK. 
+        content: `You are a comprehensive information assistant for Northstowe residents in Cambridgeshire, UK. Search thoroughly for the most current and detailed information available.
         
-        Provide accurate, helpful information about:
+        When answering questions, provide:
+        - Specific dates, timelines, and schedules when available
+        - Construction updates and development progress
+        - Contact details and official sources
+        - Practical details residents need to know
+        
+        Focus areas include:
+        - Community facilities (Unity Centre, libraries, sports facilities)
         - Local services (GP surgeries, schools, shops, transport)
-        - Community events and town council meetings  
-        - Development updates and planning
-        - Local facilities and amenities
+        - Town council meetings and community events
+        - Planning applications and development updates
         - Transportation links to Cambridge and surrounding areas
+        - Housing developments and infrastructure projects
         
-        Always focus on Northstowe-specific information. If you don't have current information, suggest checking the official Northstowe website or town council for the most up-to-date details.
+        Always search for the most recent information available. If you find specific details like opening dates, construction timelines, or official announcements, include them in your response. Be thorough in your research.
         
-        Keep responses concise, friendly, and helpful for local residents.`
+        Maintain a helpful, informative tone suitable for local residents seeking practical information.`
       },
       {
         role: 'user',
@@ -149,19 +149,16 @@ export default async function handler(
       }
     ];
 
-    console.log('Sending request to Perplexity with model: sonar-small-online');
-    
     const response = await axios.post<PerplexityResponse>(
       'https://api.perplexity.ai/chat/completions',
       {
         model: 'sonar',
         messages,
-        max_tokens: 800,
-        temperature: 0.2,
+        max_tokens: 1000,
+        temperature: 0.1,
         top_p: 0.9,
         return_citations: false,
-        search_domain_filter: ['gov.uk', 'cambridge.gov.uk', 'southcambs.gov.uk'],
-        search_recency_filter: 'month'
+        search_recency_filter: 'year'
       },
       {
         headers: {
@@ -170,9 +167,6 @@ export default async function handler(
         }
       }
     );
-    
-    console.log('Perplexity response status:', response.status);
-    console.log('Perplexity response data:', JSON.stringify(response.data, null, 2));
 
     const aiResponse = response.data.choices[0]?.message?.content;
     
